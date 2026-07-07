@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum NotificationStatus {
+  PENDING
+  PROCESSING
+  SENT
+  FAILED
+}
+
+enum NotificationChannel {
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+}
+
+
+model Notification {
+  id          String @id @default(uuid())
+
+  channel     NotificationChannel
+
+  recipient   String
+
+  subject     String?
+
+  message     String?
+
+  template    String?
+
+  variables   Json?
+
+  status      NotificationStatus @default(PENDING)
+
+  provider    String?
+
+  retryCount  Int @default(0)
+
+  createdAt   DateTime @default(now())
+
+  updatedAt   DateTime @updatedAt
+}
+
+model Template {
+  id          String @id @default(uuid())
+
+  name        String @unique
+
+  channel     NotificationChannel
+
+  subject     String?
+
+  content     String
+
+  createdAt   DateTime @default(now())
+
+  updatedAt   DateTime @updatedAt
+}
+
+model ApiClient {
+  id          String @id @default(uuid())
+
+  name        String
+
+  apiKey      String @unique
+
+  isActive    Boolean @default(true)
+
+  createdAt   DateTime @default(now())
+}
