@@ -10,25 +10,51 @@ const getRequiredEnv = (key) => {
   return value;
 };
 
+// const getTransporter = () => {
+//   const port = Number(process.env.SMTP_PORT || 587);
+//   console.log("SMTP verified successfully");
+//   return nodemailer.createTransport({
+//     host: getRequiredEnv("SMTP_HOST"),
+//     port,
+//     secure: process.env.SMTP_SECURE === "true" || port === 465,
+//     // requireTLS: true,
+//     // family: 4,
+//     // connectionTimeout: 20000,
+//     // greetingTimeout: 20000,
+//     // socketTimeout: 20000,
+//     auth: {
+//       user: getRequiredEnv("SMTP_USER"),
+//       pass: getRequiredEnv("SMTP_PASS"),
+//     },
+//     // tls: {
+//     //   rejectUnauthorized: false,
+//     // },
+//   });
+// };
 const getTransporter = () => {
-  const port = Number(process.env.SMTP_PORT || 587);
-  console.log("SMTP verified successfully");
-  return nodemailer.createTransport({
-    host: getRequiredEnv("SMTP_HOST"),
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT);
+  const secure = process.env.SMTP_SECURE === "true";
+
+  console.log("========== SMTP CONFIG ==========");
+  console.log({
+    host,
     port,
-    secure: process.env.SMTP_SECURE === "true" || port === 465,
-    // requireTLS: true,
-    // family: 4,
-    // connectionTimeout: 20000,
-    // greetingTimeout: 20000,
-    // socketTimeout: 20000,
+    secure,
+    user: process.env.SMTP_USER,
+  });
+  console.log("=================================");
+
+  return nodemailer.createTransport({
+    host,
+    port,
+    secure,
     auth: {
-      user: getRequiredEnv("SMTP_USER"),
-      pass: getRequiredEnv("SMTP_PASS"),
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
     },
-    // tls: {
-    //   rejectUnauthorized: false,
-    // },
+    logger: true,
+    debug: true,
   });
 };
 
