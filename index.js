@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import morgan from "morgan";
 import notificationRoutes from "./src/routes/notification.routes.js";
-
+import "./src/workers/email.worker.js";
 const app = express();
 app.use(morgan("dev"));
 app.use(cors());
