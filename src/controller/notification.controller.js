@@ -4,9 +4,15 @@ import {
   createNotificationSchema,
   createOtpEmailSchema,
 } from "../validation/notification.validation.js";
-import emailQueue from "../queues/email.queue.js";
+import getEmailQueue from "../queues/email.queue.js";
 
 const enqueueEmailNotification = async (notificationId) => {
+  const emailQueue = await getEmailQueue();
+
+  if (!emailQueue) {
+    return null;
+  }
+
   return emailQueue.add(
     "send-email",
     {
@@ -69,7 +75,8 @@ const getInquiryAutoReplyMessage = ({ name }) => {
 
 export const createNotification = async (req, res) => {
   try {
-    const validatedData = createNotificationSchema.parse(req.body);
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const validatedData = createNotificationSchema.parse(body);
 
     const notification =
       await notificationService.createNotification(validatedData);
@@ -92,7 +99,8 @@ export const createNotification = async (req, res) => {
 
 export const createOtpEmailNotification = async (req, res) => {
   try {
-    const validatedData = createOtpEmailSchema.parse(req.body);
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const validatedData = createOtpEmailSchema.parse(body);
 
     const notification = await notificationService.createNotification({
       channel: "EMAIL",
@@ -121,7 +129,8 @@ export const createOtpEmailNotification = async (req, res) => {
 
 export const createInquiryEmailNotification = async (req, res) => {
   try {
-    const validatedData = createInquiryEmailSchema.parse(req.body);
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const validatedData = createInquiryEmailSchema.parse(body);
     const recipient = getInquiryRecipients();
     const email = validatedData.email || validatedData.recipient;
 
