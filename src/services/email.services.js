@@ -12,13 +12,12 @@ const getRequiredEnv = (key) => {
 
 const getTransporter = () => {
   const port = Number(process.env.SMTP_PORT || 587);
-
+  console.log("SMTP verified successfully");
   return nodemailer.createTransport({
     host: getRequiredEnv("SMTP_HOST"),
     port,
     secure: process.env.SMTP_SECURE === "true" || port === 465,
-    requireTLS: true,
-    secured: true,
+    // requireTLS: true,
     // family: 4,
     // connectionTimeout: 20000,
     // greetingTimeout: 20000,
@@ -27,9 +26,9 @@ const getTransporter = () => {
       user: getRequiredEnv("SMTP_USER"),
       pass: getRequiredEnv("SMTP_PASS"),
     },
-    tls: {
-      rejectUnauthorized: false,
-    },
+    // tls: {
+    //   rejectUnauthorized: false,
+    // },
   });
 };
 
@@ -63,5 +62,11 @@ export const sendEmail = async ({ to, subject, message, html, text }) => {
 export const verifyEmailService = async () => {
   const transporter = getTransporter();
 
-  return transporter.verify();
+  console.log("Verifying SMTP...");
+
+  const result = await transporter.verify();
+
+  console.log("SMTP Verify Result:", result);
+
+  return result;
 };

@@ -19,8 +19,6 @@ app.listen(5000, () => {
 app.get("/", (req, res) => {
   res.send("API is running...");
 });
-app.use("/api/v1/notifications", notificationRoutes);
-
 app.get("/verify-email", async (req, res) => {
   try {
     await verifyEmailService();
@@ -34,4 +32,6 @@ app.get("/verify-email", async (req, res) => {
     });
   }
 });
+app.use("/api/v1/notifications", notificationRoutes);
+
 export default app;
